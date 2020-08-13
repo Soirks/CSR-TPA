@@ -180,11 +180,7 @@ namespace tpa
                     {
                         online = online + "\",\"" + p;
                     }
-                    online = online + "\"]";if (a.cmd.StartsWith("/warpadd"))
-                {
-                    re = false;
-                    Console.WriteLine(api.selectPlayer(uuid[a.playername]));
-                }
+                    online = online + "\"]";
                     online = "[" + online.Substring(4);
                     api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"这个一个TPAGUI喵\"},{\"default\":0,\"options\":" + online + ",\"type\":\"dropdown\",\"text\":\"请选择一个玩家\"}], \"type\":\"custom_form\",\"title\":\"TPAGUI\"}").ToString();
                     guils[a.playername] = "fz";
