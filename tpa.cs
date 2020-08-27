@@ -17,7 +17,7 @@ namespace tpa
         {
             api.setCommandDescribe("homegui", "打开homegui");
             api.setCommandDescribe("tpato", "传送到一个玩家");
-            api.setCommandDescribe("tpac", "同游传送请求");
+            api.setCommandDescribe("tpac", "同意传送请求");
             api.setCommandDescribe("tpde", "拒绝传送请求");
             api.setCommandDescribe("tpapb", "改变tpa屏蔽状态");
             api.setCommandDescribe("tpagui", "打开tpagui");
