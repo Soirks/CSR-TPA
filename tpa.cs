@@ -5,19 +5,20 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tpa
+namespace Soirks
 {
-    public class tpa
+    public class TPA
     {
-        public static void tpaa(MCCSAPI api)
+        public static void AA(MCCSAPI api)
         {
             api.setCommandDescribe("homegui", "打开homegui");
             api.setCommandDescribe("tpato", "传送到一个玩家");
-            api.setCommandDescribe("tpac", "同游传送请求");
+            api.setCommandDescribe("tpac", "同意传送请求");
             api.setCommandDescribe("tpde", "拒绝传送请求");
             api.setCommandDescribe("tpapb", "改变tpa屏蔽状态");
             api.setCommandDescribe("tpagui", "打开tpagui");
@@ -49,7 +50,7 @@ namespace tpa
                     home_max = config[2].Substring(14);
                     Console.WriteLine("[TPA]配置文件读取成功！");
                 }
-                catch { Console.WriteLine("[TPA]配置文件读取失败！"); }
+                catch { Console.WriteLine("[TPA]配置文件读取失败！已使用默认值!"); }
               
             }
             else
@@ -67,7 +68,7 @@ namespace tpa
                     if (tpa_pb.ContainsKey(a.playername) == false)
                     {
                         tpa_pb.Add(a.playername, "no");
-                    }
+                    }//30000
                 try
                 {
                     tpa_dx.Add(a.playername, "cxk");
@@ -98,40 +99,40 @@ namespace tpa
                             {
                                 if (tpa_pb[tpatoplayername] == "no")
                                 {
-                                    api.runcmd("tellraw \"" + tpatoplayername + "\" {\"rawtext\":[{\"text\":\"玩家" + a.playername + "向您发送了一个传送请求,/tpac接受，/tpde拒绝\"}]}");
+                                    api.runcmd("tellraw \"" + tpatoplayername + "\" {\"rawtext\":[{\"text\":\"§a§l玩家§c" + a.playername + "§a向您发送了一个传送请求,输入§e/tpac§a接受，§e/tpde§a拒绝\"}]}");
                                     tpa_ys[a.playername] = "1";
                                     tpa_dx[tpatoplayername] = a.playername;
-                                    tpa_gui[tpatoplayername] =  api.sendModalForm(uuid[tpatoplayername], "TPA请求", "玩家" + a.playername + "向您发送了一个传送请求", "同意", "拒绝").ToString();
+                                    tpa_gui[tpatoplayername] =  api.sendModalForm(uuid[tpatoplayername], "有新的TPA请求", "玩家" + a.playername + "向您发送了一个传送请求", "同意", "拒绝").ToString();
                                     Task taskkk = Task.Run(async () =>
                                     {
                                         await Task.Delay(tpa_yx);
                                         if (tpa_ys[a.playername] == "1")
                                         {
                                             tpa_ys[a.playername] = "0";
-                                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"tpa请求超时\"}]}");
+                                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§atpa请求超时\"}]}");
                                             tpa_dx[tpatoplayername] = "cxk";
                                         }
                                     });
                                 }
                                 else
                                 {
-                                    api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"对方屏蔽了tpa请求\"}]}");
+                                    api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§c对方屏蔽了tpa请求\"}]}");
                                 }
                             }
                             else
                             {
-                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"tpa请求发送失败，请检查您输入的指令\"}]}");
+                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a§ltpa请求发送失败，请检查您输入的指令\"}]}");
                             }
                         }
                         else
                         {
-                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"您有另一个tpa正在进行中！\"}]}");
+                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§c§l您有另一个tpa正在进行中！\"}]}");
                         }
                     }
 
                     catch
                     {
-                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"tpa请求发送失败，请检查您输入的指令\"}]}");
+                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a§ltpa请求发送失败，请检查您输入的指令\"}]}");
                         Console.WriteLine("warn！");
                     }
                 }
@@ -158,7 +159,7 @@ namespace tpa
                     }
                     else
                     {
-                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"没有人向你发送传送请求！\"}]}");
+                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a没有人向你发送传送请求！\"}]}");
                     }
                 }
                 if (a.cmd.StartsWith("/tpde"))
@@ -166,13 +167,13 @@ namespace tpa
                     re = false;
                     if (tpa_dx[a.playername] != "cxk")
                     {
-                        api.runcmd("tellraw \"" + tpa_dx[a.playername] + "\" {\"rawtext\":[{\"text\":\"对方拒绝了您的传送请求\"}]}");
+                        api.runcmd("tellraw \"" + tpa_dx[a.playername] + "\" {\"rawtext\":[{\"text\":\"§c对方拒绝了您的传送请求\"}]}");
                         tpa_ys[tpa_dx[a.playername]] = "0";
                         tpa_dx[a.playername] = "cxk";
                     }
                     else
                     {
-                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"没有人向你发送传送请求！\"}]}");
+                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a没有人向你发送传送请求！\"}]}");
                     }
                 }
                 if (a.cmd.StartsWith("/tpagui"))
@@ -185,7 +186,7 @@ namespace tpa
                     }
                     online = online + "\"]";                          
                     online = "[" + online.Substring(4);
-                    api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"这个一个TPAGUI喵\"},{\"default\":0,\"options\":" + online + ",\"type\":\"dropdown\",\"text\":\"请选择一个玩家\"}], \"type\":\"custom_form\",\"title\":\"TPAGUI\"}").ToString();
+                    api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"§c§ltp菜单\"},{\"default\":0,\"options\":" + online + ",\"type\":\"dropdown\",\"text\":\"§a选择传送的玩家\"}], \"type\":\"custom_form\",\"title\":\"TPAGUI\"}").ToString();
                     guils[a.playername] = "fz";
                 }
                 if (__back == "true")
@@ -196,7 +197,7 @@ namespace tpa
                         if (back_x[a.playername] != string.Empty)
                         {
                             api.teleport(uuid[a.playername], Convert.ToSingle( back_x[a.playername]), Convert.ToSingle(back_y[a.playername]), Convert.ToSingle(back_z[a.playername]),back_did[a.playername]);
-                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"命令已执行\"}]}");
+                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§6已返回死亡点！\"}]}");
                             back_x[a.playername] = string.Empty;
                             back_y[a.playername] = string.Empty;
                             back_z[a.playername] = string.Empty;
@@ -218,7 +219,7 @@ namespace tpa
                         }
                         else
                         {
-                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"您设置的home数量已达到上限!\"}]}");
+                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a您设置的home数量已达到上限!最大值为:" + home_max+"\"}]}");
                         }
                     }
                     else
@@ -242,14 +243,14 @@ namespace tpa
                                 homes = homes +"\""+ line.Substring(0,line.IndexOf("-")) + "\""  + ",";
                             }
                             homes = homes.Substring(0, homes.Length-1) + "]";
-                            api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"这个一个Thomegui\"},{\"default\":0,\"options\":" + homes + ",\"type\":\"dropdown\",\"text\":\"请选择一个家\"}], \"type\":\"custom_form\",\"title\":\"HOMEGUI\"}").ToString();
+                            api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"§a§l选择你传送的家\"},{\"default\":0,\"options\":" + homes + ",\"type\":\"dropdown\",\"text\":\"请选择一个家\"}], \"type\":\"custom_form\",\"title\":\"HOMEGUI\"}").ToString();
                             guils[a.playername] = "homegui";
                         }
-                        else { api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"您还没有任何家!\"}]}"); }
+                        else { api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a您还没有任何家!\"}]}"); }
                     }
                     else
                     {
-                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"您还没有任何家!\"}]}");
+                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a您还没有任何家!\"}]}");
                     }
                 }
                 if (a.cmd.StartsWith("/homego "))
@@ -270,7 +271,7 @@ namespace tpa
                         }
                         if (bbb == 1)
                         {
-                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"未找到该名称的home点!\"}]}");
+                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§a未找到该名称的home点!\"}]}");
                         }
                     }
                 }
@@ -293,19 +294,19 @@ namespace tpa
                             }
                             if (ol.Count == lines.Length)
                             {
-                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"未找到该名字的home点\"}]}");
+                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§c未找到该名字的home点\"}]}");
                             }
                             else
                             {
                                 File.Delete("./data/tpa/" + a.playername + ".txt");
                                 File.AppendAllLines("./data/tpa/" + a.playername + ".txt", (string[])ol.ToArray(typeof(string)));
-                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"该home点已删除！\"}]}");
+                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§c该home点已成功删除！\"}]}");
                             }
                         }
                     }
                     else
                     {
-                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"您还没有任何home点\"}]}");
+                        api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§c您还没有任何home点\"}]}");
                     }
                 }
                 return re;
@@ -321,6 +322,7 @@ namespace tpa
                         back_y[a.playername] = a.XYZ.y.ToString();
                         back_z[a.playername] = a.XYZ.z.ToString();
                         back_did[a.playername] = a.dimensionid;
+                       
                     }
                     catch { }
                 }
@@ -353,20 +355,21 @@ namespace tpa
                         api.runcmd("tp " + a.playername + " " + lines[ssss].Substring(lines[ssss].IndexOf("-") + 1));
                     }
                     catch { }
-                }
+                    }
                 if (guils[a.playername] == "fz")
                 {
                     try
                     {
                         if (tpa_ys[a.playername] == "0")
                         {
+
                             String tpatoplayername;
                             tpatoplayername = onlineplayer[int.Parse(a.selected.Substring(6, 1))].ToString();
                             if (api.getOnLinePlayers().IndexOf(tpatoplayername) != -1 && tpatoplayername.Length > 5)
                             {
                                 if (tpa_pb[tpatoplayername] == "no")
                                 {
-                                    api.runcmd("tellraw \"" + tpatoplayername + "\" {\"rawtext\":[{\"text\":\"玩家" + a.playername + "向您发送了一个传送请求,/tpac接受，/tpde拒绝\"}]}");
+                                    api.runcmd("tellraw \"" + tpatoplayername + "\" {\"rawtext\":[{\"text\":\"§a§l玩家§c" + a.playername + "§a§l向您发送了一个传送请求,§e/tpac§a接受，§e/tpde§a拒绝\"}]}");
                                     tpa_ys[a.playername] = "1";
                                     tpa_dx[tpatoplayername] = a.playername;
                                     tpa_gui[tpatoplayername] = api.sendModalForm(uuid[tpatoplayername], "TPA请求", "玩家" + a.playername + "向您发送了一个传送请求", "同意", "拒绝").ToString();
@@ -378,22 +381,23 @@ namespace tpa
                                         if (tpa_ys[a.playername] == "1")
                                         {
                                             tpa_ys[a.playername] = "0";
-                                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"tpa请求超时\"}]}");
+                                            api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§etpa请求超时\"}]}");
                                             tpa_dx[tpatoplayername] = "cxk";
                                         }
                                     });
                                 }
                                 else
                                 {
-                                    api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"对方屏蔽了tpa请求\"}]}");
+                                    api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§e对方屏蔽了tpa请求\"}]}");
                                 }
                             }
                             else
                             {
-                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"tpa请求发送失败，请检查您输入的指令\"}]}");
+                                api.runcmd("tellraw \"" + a.playername + "\" {\"rawtext\":[{\"text\":\"§ctpa请求发送失败，请检查您输入的指令\"}]}");
                             }
                         }
-                    }
+
+                     }
                     catch { }
                 }
                 if (guils[a.playername] == "jd")
@@ -412,42 +416,30 @@ namespace tpa
                     }
                     if (a.selected == "false")
                     {
-                        api.runcmd("tellraw \"" + tpa_dx[a.playername] + "\" {\"rawtext\":[{\"text\":\"对方拒绝了您的传送请求\"}]}");
+                        api.runcmd("tellraw \"" + tpa_dx[a.playername] + "\" {\"rawtext\":[{\"text\":\"§c对方拒绝了您的传送请求\"}]}");
                         tpa_ys[tpa_dx[a.playername]] = "0";
                         tpa_dx[a.playername] = "cxk";
                     }
                     guils[a.playername] = string.Empty;
-                }
+                };
                 return true;
             });
+            Console.WriteLine("tpa请求有效时间（毫秒）："+ tpa_yx);
+            Console.WriteLine("是否开启back命令："+__back);
+            Console.WriteLine("home最大上限"+home_max);
         }
     }
 }
-/*namespace aaaa
+namespace CSR
 {
-    public class test
+    partial class Plugin
     {
-        public static void testt(MCCSAPI api)
+
+        public static void onStart(MCCSAPI api)
         {
-            Dictionary<string, string> uuid = new Dictionary<string, string>();
-            api.addAfterActListener(EventKey.onLoadName, x =>
-            {
-                var a = BaseEvent.getFrom(x) as LoadNameEvent;
-                uuid.Add(a.playername, a.uuid);
-                return true;
-            });
-            api.addBeforeActListener(EventKey.onInputCommand, x =>
-            {
-                var a = BaseEvent.getFrom(x) as InputCommandEvent;
-                api.sendCustomForm(uuid[a.playername], "{\"content\":[{\"type\":\"label\",\"text\":\"这个一个TPAGUI喵\"},{\"default\":0,\"options\":[],\"type\":\"dropdown\",\"text\":\"请选择一个玩家\"}], \"type\":\"custom_form\",\"title\":\"TPAGUI\"}").ToString();
-                return true;
-            });
-            api.addAfterActListener(EventKey.onFormSelect, x =>
-            {
-                var a = BaseEvent.getFrom(x) as FormSelectEvent;
-                Console.WriteLine(a.selected);
-                return true;
-            });
+            // TODO 此接口为必要实现
+            Soirks.TPA.AA(api);
+            Console.WriteLine("TPA已经装载，作者:wzy");
         }
     }
-}*/
+}
