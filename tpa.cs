@@ -1,4 +1,4 @@
-using CSR;
+﻿using CSR;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -347,7 +347,7 @@ namespace tpa
                 {
                     int ssss = Convert.ToInt32(a.selected.Substring(6, a.selected.Length - 7));
                     string[] lines = File.ReadAllLines("./data/tpa/" + a.playername + ".txt");
-                    guils[a.playername] = string.Empty
+                    guils[a.playername] = string.Empty;
                     api.runcmd("tp " + a.playername + " " + lines[ssss].Substring(lines[ssss].IndexOf("-")+1));
                 }
                 if (guils[a.playername] == "fz")
@@ -365,7 +365,7 @@ namespace tpa
                                 tpa_dx[tpatoplayername] = a.playername;
                                 tpa_gui[tpatoplayername] = api.sendModalForm(uuid[tpatoplayername], "TPA请求", "玩家" + a.playername + "向您发送了一个传送请求", "同意", "拒绝").ToString();
                                 guils[tpatoplayername] = "jd";
-                                guils[a.playername] = string.Empty
+                                guils[a.playername] = string.Empty;
                                 Task taskkk = Task.Run(async () =>
                                 {
                                     await Task.Delay(tpa_yx);
@@ -408,7 +408,7 @@ namespace tpa
                         tpa_ys[tpa_dx[a.playername]] = "0";
                         tpa_dx[a.playername] = "cxk";
                     }
-                    guils[a.playername] = string.Empty
+                    guils[a.playername] = string.Empty;
                 }
                 return true;
             });
